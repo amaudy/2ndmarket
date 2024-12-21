@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db import transaction
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.core.exceptions import ValidationError
 from .models import ProductListing, ListingImage
 from .forms import ProductListingForm
@@ -74,3 +74,15 @@ class DeleteListingView(LoginRequiredMixin, DeleteView):
             return JsonResponse({'error': 'Not authorized'}, status=403)
         self.object.delete()
         return JsonResponse({'status': 'success'})
+
+class ListingDetailView(DetailView):
+    model = ProductListing
+    template_name = 'listings/listing_detail.html'
+    context_object_name = 'listing'
+
+    def get_queryset(self):
+        return ProductListing.objects.select_related(
+            'seller',
+            'category',
+            'category__main_category'
+        ).prefetch_related('images')

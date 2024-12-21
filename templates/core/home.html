@@ -1,41 +1,141 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Market2Hand - Buy and Sell Second Hand Items{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto">
-    <!-- Hero Section -->
-    <div class="text-center py-12">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">
-            Welcome to Market2Hand
-        </h1>
-        <p class="text-lg text-gray-600 mb-8">
-            Buy and sell second-hand items in your community
-        </p>
-        {% if user.is_authenticated %}
-        <a href="#" class="btn-primary">
-            Create Listing
-        </a>
-        {% else %}
-        <a href="{% url 'account_signup' %}" class="btn-primary">
-            Get Started
-        </a>
-        {% endif %}
-    </div>
-
-    <!-- Featured Categories -->
-    <div class="py-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-8">Browse Categories</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Add category cards here -->
+<!-- Hero Section -->
+<div class="bg-gradient-to-r from-blue-500 to-indigo-600">
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h1 class="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
+                <span class="block">Buy and Sell</span>
+                <span class="block text-indigo-200">Second Hand Items</span>
+            </h1>
+            <p class="mt-3 max-w-md mx-auto text-base text-indigo-100 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+                Find great deals on second-hand items or sell items you no longer need.
+            </p>
+            <div class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
+                {% if user.is_authenticated %}
+                <div class="rounded-md shadow">
+                    <a href="#" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10">
+                        Create Listing
+                    </a>
+                </div>
+                {% else %}
+                <div class="rounded-md shadow">
+                    <a href="{% url 'account_signup' %}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10">
+                        Get Started
+                    </a>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- Recent Listings -->
-    <div class="py-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-8">Recent Listings</h2>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <!-- Add listing cards here -->
+<!-- Search Section -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <form action="{% url 'home' %}" method="get" class="flex gap-4">
+        <input type="text" name="q" placeholder="Search items..." 
+               class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+        <button type="submit" 
+                class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+            Search
+        </button>
+    </form>
+</div>
+
+<!-- Categories Section -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h2 class="text-2xl font-extrabold tracking-tight text-gray-900 mb-8">
+        Browse Categories
+    </h2>
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {% for category in categories %}
+        <a href="#" class="group">
+            <div class="relative rounded-lg overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div class="p-6">
+                    <h3 class="text-lg font-medium text-gray-900 group-hover:text-indigo-600">
+                        {{ category.name }}
+                    </h3>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Recent Listings Section -->
+{% comment %}
+<div class="bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h2 class="text-2xl font-extrabold tracking-tight text-gray-900 mb-8">
+            Recent Listings
+        </h2>
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {% for listing in recent_listings %}
+            <div class="group">
+                <div class="relative rounded-lg overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="{{ listing.image_url }}" alt="{{ listing.title }}" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-lg font-medium text-gray-900 group-hover:text-indigo-600">
+                            {{ listing.title }}
+                        </h3>
+                        <p class="mt-1 text-sm text-gray-500">
+                            {{ listing.price }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endcomment %}
+
+<!-- How It Works Section -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h2 class="text-2xl font-extrabold tracking-tight text-gray-900 text-center mb-12">
+        How It Works
+    </h2>
+    <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
+        <div class="text-center">
+            <div class="rounded-lg bg-indigo-500 p-3 inline-block">
+                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+            </div>
+            <h3 class="mt-4 text-lg font-medium text-gray-900">Create Listing</h3>
+            <p class="mt-2 text-base text-gray-500">
+                List your items quickly and easily
+            </p>
+        </div>
+        <div class="text-center">
+            <div class="rounded-lg bg-indigo-500 p-3 inline-block">
+                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+            </div>
+            <h3 class="mt-4 text-lg font-medium text-gray-900">Buy Items</h3>
+            <p class="mt-2 text-base text-gray-500">
+                Find great deals on second-hand items
+            </p>
+        </div>
+        <div class="text-center">
+            <div class="rounded-lg bg-indigo-500 p-3 inline-block">
+                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/>
+                </svg>
+            </div>
+            <h3 class="mt-4 text-lg font-medium text-gray-900">Connect</h3>
+            <p class="mt-2 text-base text-gray-500">
+                Message sellers and arrange deals
+            </p>
         </div>
     </div>
 </div>

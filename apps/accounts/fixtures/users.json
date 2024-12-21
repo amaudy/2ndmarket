@@ -3,7 +3,7 @@
         "model": "auth.user",
         "pk": 1,
         "fields": {
-            "password": "pbkdf2_sha256$600000$your_generated_hash_here",
+            "password": "pbkdf2_sha256$870000$fwnlj8bKAFkGIQZyNQ2E2R$THFTGIePJJLQThp99YmiodK9SmpAB1Wfr0oPFkrjDrM=",
             "last_login": null,
             "is_superuser": true,
             "username": "admin",
@@ -19,7 +19,7 @@
         "model": "auth.user",
         "pk": 2,
         "fields": {
-            "password": "pbkdf2_sha256$600000$your_generated_hash_here",
+            "password": "pbkdf2_sha256$870000$ReLt0ch94iJuPTjO0KCfhf$zqAHXIZV5JcyR6drZ5NGBrl2gVDaJJLJ5wZsLZsEZso=",
             "last_login": null,
             "is_superuser": false,
             "username": "testuser",

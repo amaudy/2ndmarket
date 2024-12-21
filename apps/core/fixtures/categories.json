@@ -1,0 +1,36 @@
+{
+    "categories": [
+        {
+            "id": 1,
+            "name": "Electronics & Gadgets",
+            "subcategories": [
+                {
+                    "id": 101,
+                    "name": "Smartphones",
+                    "items": ["iPhones", "Android Phones", "Feature Phones"]
+                },
+                {
+                    "id": 102,
+                    "name": "Laptops & Computers",
+                    "items": ["Laptops", "Desktops", "Tablets", "Accessories"]
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Fashion & Accessories",
+            "subcategories": [
+                {
+                    "id": 201,
+                    "name": "Men's Clothing",
+                    "items": ["Shirts", "Pants", "Suits", "Jackets"]
+                },
+                {
+                    "id": 202,
+                    "name": "Women's Clothing",
+                    "items": ["Dresses", "Tops", "Pants", "Skirts"]
+                }
+            ]
+        }
+    ]
+} 

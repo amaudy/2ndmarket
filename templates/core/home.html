@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Market2Hand - Buy and Sell Second Hand Items{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Hero Section -->
+    <div class="text-center py-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+            Welcome to Market2Hand
+        </h1>
+        <p class="text-lg text-gray-600 mb-8">
+            Buy and sell second-hand items in your community
+        </p>
+        {% if user.is_authenticated %}
+        <a href="#" class="btn-primary">
+            Create Listing
+        </a>
+        {% else %}
+        <a href="{% url 'account_signup' %}" class="btn-primary">
+            Get Started
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Featured Categories -->
+    <div class="py-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-8">Browse Categories</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Add category cards here -->
+        </div>
+    </div>
+
+    <!-- Recent Listings -->
+    <div class="py-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-8">Recent Listings</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Add listing cards here -->
+        </div>
+    </div>
+</div>
+{% endblock %} 

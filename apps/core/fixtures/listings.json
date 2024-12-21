@@ -1,0 +1,36 @@
+[
+    {
+        "model": "listings.productlisting",
+        "pk": 1,
+        "fields": {
+            "title": "iPhone 12 Pro - Great Condition",
+            "description": "Used for 1 year, comes with original box and charger",
+            "price": "599.99",
+            "condition": "Good",
+            "brand": "Apple",
+            "seller": 2,
+            "category_item": 101,
+            "is_available": true,
+            "status": "Active",
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "listings.productlisting",
+        "pk": 2,
+        "fields": {
+            "title": "Dell XPS 13 Laptop",
+            "description": "16GB RAM, 512GB SSD, Intel i7",
+            "price": "899.99",
+            "condition": "Like New",
+            "brand": "Dell",
+            "seller": 2,
+            "category_item": 102,
+            "is_available": true,
+            "status": "Active",
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    }
+] 

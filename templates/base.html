@@ -34,10 +34,12 @@
     
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="flex flex-col min-h-screen bg-gray-50">
     {% include "partials/header.html" %}
     
-    <main class="container mx-auto px-4 py-8">
+    {% include "partials/messages.html" %}
+    
+    <main class="flex-grow container mx-auto px-4 py-8">
         {% block content %}{% endblock %}
     </main>
     

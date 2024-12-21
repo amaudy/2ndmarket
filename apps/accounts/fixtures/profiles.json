@@ -1,0 +1,22 @@
+[
+    {
+        "model": "accounts.userprofile",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "phone_number": "+1234567890",
+            "address": "123 Admin St",
+            "created_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "accounts.userprofile",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "phone_number": "+0987654321",
+            "address": "456 Test Ave",
+            "created_at": "2024-01-01T00:00:00Z"
+        }
+    }
+] 

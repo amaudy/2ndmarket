@@ -5,8 +5,8 @@ services:
       sh -c "python manage.py migrate &&
              python manage.py loaddata users &&
              python manage.py loaddata email_addresses &&
-             python manage.py makemigrations categories &&
-             python manage.py migrate categories &&
+             python manage.py makemigrations &&
+             python manage.py migrate &&
              python manage.py loaddata initial_categories &&
              python manage.py runserver 0.0.0.0:8000"
     volumes:

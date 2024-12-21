@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.core',
     'apps.categories.apps.CategoriesConfig',
+    'apps.listings.apps.ListingsConfig',
 ]
 
 MIDDLEWARE = [
@@ -136,6 +137,12 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Media files serving in development
+if DEBUG:
+    from django.conf.urls.static import static
+    urlpatterns = []
+    urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

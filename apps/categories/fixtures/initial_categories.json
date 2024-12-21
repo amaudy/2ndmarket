@@ -23,5 +23,170 @@
             "created_at": "2024-01-01T00:00:00Z",
             "updated_at": "2024-01-01T00:00:00Z"
         }
+    },
+    {
+        "model": "categories.subcategory",
+        "pk": 102,
+        "fields": {
+            "main_category": 1,
+            "name": "Laptops & Computers",
+            "slug": "laptops-computers",
+            "is_active": true,
+            "display_order": 2,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "categories.maincategory",
+        "pk": 2,
+        "fields": {
+            "name": "Fashion & Accessories",
+            "slug": "fashion-accessories",
+            "is_active": true,
+            "display_order": 2,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "categories.subcategory",
+        "pk": 201,
+        "fields": {
+            "main_category": 2,
+            "name": "Men's Clothing",
+            "slug": "mens-clothing",
+            "is_active": true,
+            "display_order": 1,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "categories.subcategory",
+        "pk": 202,
+        "fields": {
+            "main_category": 2,
+            "name": "Women's Clothing",
+            "slug": "womens-clothing",
+            "is_active": true,
+            "display_order": 2,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "categories.maincategory",
+        "pk": 3,
+        "fields": {
+            "name": "Home & Living",
+            "slug": "home-living",
+            "is_active": true,
+            "display_order": 3,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "categories.subcategory",
+        "pk": 301,
+        "fields": {
+            "main_category": 3,
+            "name": "Furniture",
+            "slug": "furniture",
+            "is_active": true,
+            "display_order": 1,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "categories.subcategory",
+        "pk": 302,
+        "fields": {
+            "main_category": 3,
+            "name": "Home Appliances",
+            "slug": "home-appliances",
+            "is_active": true,
+            "display_order": 2,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "categories.maincategory",
+        "pk": 4,
+        "fields": {
+            "name": "Sports & Outdoors",
+            "slug": "sports-outdoors",
+            "is_active": true,
+            "display_order": 4,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "categories.subcategory",
+        "pk": 401,
+        "fields": {
+            "main_category": 4,
+            "name": "Sports Equipment",
+            "slug": "sports-equipment",
+            "is_active": true,
+            "display_order": 1,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "categories.subcategory",
+        "pk": 402,
+        "fields": {
+            "main_category": 4,
+            "name": "Outdoor Gear",
+            "slug": "outdoor-gear",
+            "is_active": true,
+            "display_order": 2,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "categories.maincategory",
+        "pk": 5,
+        "fields": {
+            "name": "Books & Media",
+            "slug": "books-media",
+            "is_active": true,
+            "display_order": 5,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "categories.subcategory",
+        "pk": 501,
+        "fields": {
+            "main_category": 5,
+            "name": "Books",
+            "slug": "books",
+            "is_active": true,
+            "display_order": 1,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "categories.subcategory",
+        "pk": 502,
+        "fields": {
+            "main_category": 5,
+            "name": "Video Games",
+            "slug": "video-games",
+            "is_active": true,
+            "display_order": 2,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
     }
 ] 

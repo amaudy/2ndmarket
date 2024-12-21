@@ -7,6 +7,8 @@ from django.views.generic import ListView
 from django.core.exceptions import ValidationError
 from .models import ProductListing, ListingImage
 from .forms import ProductListingForm
+from django.http import JsonResponse
+from django.views.generic.edit import DeleteView
 
 class CreateListingView(LoginRequiredMixin, CreateView):
     model = ProductListing
@@ -49,6 +51,26 @@ class MyListingsView(LoginRequiredMixin, ListView):
     model = ProductListing
     template_name = 'listings/my_listings.html'
     context_object_name = 'listings'
+    paginate_by = 9  # Show 9 listings per page
+    ordering = ['-created_at']
 
     def get_queryset(self):
-        return ProductListing.objects.filter(seller=self.request.user).order_by('-created_at')
+        return ProductListing.objects.filter(
+            seller=self.request.user
+        ).select_related(
+            'category', 
+            'category__main_category'
+        ).prefetch_related(
+            'images'
+        ).order_by('-created_at')
+
+class DeleteListingView(LoginRequiredMixin, DeleteView):
+    model = ProductListing
+    success_url = reverse_lazy('listings:my-listings')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.seller != request.user:
+            return JsonResponse({'error': 'Not authorized'}, status=403)
+        self.object.delete()
+        return JsonResponse({'status': 'success'})

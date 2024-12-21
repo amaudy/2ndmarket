@@ -160,3 +160,48 @@ class TestCreateListing:
         assert 'Listing 2' in str(response.content)
         assert '99.99' in str(response.content)
         assert '199.99' in str(response.content) 
+
+    def test_delete_listing(self, client):
+        client.login(username='testuser', password='testpass123')
+        
+        # Create a test listing
+        listing = ProductListing.objects.create(
+            title='Test Listing',
+            description='Test Description',
+            price='99.99',
+            condition='new',
+            category=self.sub_category,
+            seller=self.user,
+            status='active'
+        )
+        
+        url = reverse('listings:delete', kwargs={'pk': listing.pk})
+        response = client.post(url)
+        
+        assert response.status_code == 200
+        assert not ProductListing.objects.filter(pk=listing.pk).exists()
+
+    def test_delete_listing_unauthorized(self, client):
+        # Create another user
+        other_user = User.objects.create_user(
+            username='otheruser',
+            password='otherpass123'
+        )
+        client.login(username='otheruser', password='otherpass123')
+        
+        # Create a listing owned by the first user
+        listing = ProductListing.objects.create(
+            title='Test Listing',
+            description='Test Description',
+            price='99.99',
+            condition='new',
+            category=self.sub_category,
+            seller=self.user,  # Original test user
+            status='active'
+        )
+        
+        url = reverse('listings:delete', kwargs={'pk': listing.pk})
+        response = client.post(url)
+        
+        assert response.status_code == 403
+        assert ProductListing.objects.filter(pk=listing.pk).exists() 

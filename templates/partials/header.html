@@ -19,11 +19,19 @@
                             Create Listing
                         </span>
                     </a>
-                    <a href="{% url 'account_logout' %}" class="text-gray-600 hover:text-gray-900 px-3 py-2">Logout</a>
+                    <a href="{% url 'listings:my-listings' %}" class="text-gray-600 hover:text-gray-900 px-3 py-2">
+                        <span class="inline-flex items-center">
+                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                            </svg>
+                            My Listings
+                        </span>
+                    </a>
                     <a href="{% url 'account_email' %}" class="text-gray-600 hover:text-gray-900 px-3 py-2">Settings</a>
+                    <a href="{% url 'account_logout' %}" class="text-gray-600 hover:text-gray-900 px-3 py-2">Logout</a>
                 {% else %}
-                    <a href="{% url 'account_login' %}" class="text-gray-600 hover:text-gray-900 px-3 py-2">Login</a>
-                    <a href="{% url 'account_signup' %}" class="text-gray-600 hover:text-gray-900 px-3 py-2">Register</a>
+                <a href="{% url 'account_signup' %}" class="text-gray-600 hover:text-gray-900 px-3 py-2">Register</a>
+                <a href="{% url 'account_login' %}" class="text-gray-600 hover:text-gray-900 px-3 py-2">Login</a>
                 {% endif %}
             </div>
         </div>

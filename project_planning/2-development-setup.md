@@ -159,6 +159,7 @@ project_root/
 │   └── images/           # Static images
 ├── media/                 # User uploaded files
 ├── templates/             # HTML templates
+├── staticfiles/           # Collected static files
 └── tests/                # Test files
 ```
 
@@ -233,7 +234,7 @@ docker-compose down
 static/
 ├── css/
 │   └── custom.css       # Custom styles only
-├── js/
+���── js/
 │   ├── components/      # JavaScript modules
 │   └── utils/          # Utility functions
 ```

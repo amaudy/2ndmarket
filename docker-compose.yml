@@ -13,9 +13,3 @@ services:
       - DJANGO_SETTINGS_MODULE=config.settings.local
       - SECRET_KEY=your-secret-key-here
       - ALLOWED_HOSTS=localhost,127.0.0.1
-
-  tailwind:
-    build: .
-    command: tailwindcss -i ./static/src/input.css -o ./static/css/output.css --watch
-    volumes:
-      - .:/app

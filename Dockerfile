@@ -13,17 +13,12 @@ RUN apt-get update \
         build-essential \
         gcc \
         python3-dev \
-        nodejs \
-        npm \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Install Tailwind CSS
-RUN npm install -g tailwindcss
 
 # Copy project
 COPY . .

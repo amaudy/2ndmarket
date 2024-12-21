@@ -1,0 +1,200 @@
+{
+    "listings": [
+      {
+        "id": 1,
+        "category": "Electronics & Gadgets",
+        "subcategory": "Smartphones",
+        "title": "iPhone 12 Pro - Great Condition",
+        "description": "Used for 1 year, comes with original box and charger",
+        "price": 599.99,
+        "condition": "Good",
+        "status": "Active",
+        "seller": {
+          "id": 1,
+          "username": "john_doe"
+        },
+        "images": [
+          {
+            "url": "https://picsum.photos/id/1/800/600",
+            "is_primary": true
+          },
+          {
+            "url": "https://picsum.photos/id/2/800/600",
+            "is_primary": false
+          },
+          {
+            "url": "https://picsum.photos/id/3/800/600", 
+            "is_primary": false
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "category": "Electronics & Gadgets",
+        "subcategory": "Laptops & Computers",
+        "title": "Dell XPS 13 Laptop",
+        "description": "16GB RAM, 512GB SSD, Intel i7",
+        "price": 899.99,
+        "condition": "Like New",
+        "status": "Active",
+        "seller": {
+          "id": 2,
+          "username": "jane_smith"
+        },
+        "images": [
+          {
+            "url": "https://picsum.photos/id/4/800/600",
+            "is_primary": true
+          },
+          {
+            "url": "https://picsum.photos/id/5/800/600",
+            "is_primary": false
+          },
+          {
+            "url": "https://picsum.photos/id/6/800/600",
+            "is_primary": false
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "category": "Fashion & Accessories",
+        "subcategory": "Men's Clothing",
+        "title": "Nike Air Jordan Sneakers",
+        "description": "Size 10, worn only few times",
+        "price": 120.00,
+        "condition": "Good",
+        "status": "Active",
+        "seller": {
+          "id": 3,
+          "username": "mike_wilson"
+        },
+        "images": [
+          {
+            "url": "https://picsum.photos/id/7/800/600",
+            "is_primary": true
+          },
+          {
+            "url": "https://picsum.photos/id/8/800/600",
+            "is_primary": false
+          },
+          {
+            "url": "https://picsum.photos/id/9/800/600",
+            "is_primary": false
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "category": "Home & Furniture",
+        "subcategory": "Sofas & Seating",
+        "title": "IKEA Sofa Set",
+        "description": "3-seater with ottoman, 2 years old",
+        "price": 400.00,
+        "condition": "Good",
+        "status": "Active",
+        "seller": {
+          "id": 4,
+          "username": "sarah_brown"
+        },
+        "images": [
+          {
+            "url": "https://picsum.photos/id/10/800/600",
+            "is_primary": true
+          },
+          {
+            "url": "https://picsum.photos/id/11/800/600",
+            "is_primary": false
+          },
+          {
+            "url": "https://picsum.photos/id/12/800/600",
+            "is_primary": false
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "category": "Sports & Leisure",
+        "subcategory": "Fitness Equipment",
+        "title": "Treadmill NordicTrack",
+        "description": "Foldable treadmill with incline feature",
+        "price": 699.99,
+        "condition": "Good",
+        "status": "Active",
+        "seller": {
+          "id": 1,
+          "username": "john_doe"
+        },
+        "images": [
+          {
+            "url": "https://picsum.photos/id/13/800/600",
+            "is_primary": true
+          },
+          {
+            "url": "https://picsum.photos/id/14/800/600",
+            "is_primary": false
+          },
+          {
+            "url": "https://picsum.photos/id/15/800/600",
+            "is_primary": false
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "category": "Vehicles & Parts",
+        "subcategory": "Cars",
+        "title": "Toyota Camry 2019",
+        "description": "Single owner, full service history",
+        "price": 15999.99,
+        "condition": "Good",
+        "status": "Active",
+        "seller": {
+          "id": 2,
+          "username": "jane_smith"
+        },
+        "images": [
+          {
+            "url": "https://picsum.photos/id/16/800/600",
+            "is_primary": true
+          },
+          {
+            "url": "https://picsum.photos/id/17/800/600",
+            "is_primary": false
+          },
+          {
+            "url": "https://picsum.photos/id/18/800/600",
+            "is_primary": false
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "category": "Baby & Kids",
+        "subcategory": "Toys",
+        "title": "LEGO Star Wars Set",
+        "description": "Complete set with box",
+        "price": 89.99,
+        "condition": "Like New",
+        "status": "Active",
+        "seller": {
+          "id": 3,
+          "username": "mike_wilson"
+        },
+        "images": [
+          {
+            "url": "https://picsum.photos/id/19/800/600",
+            "is_primary": true
+          },
+          {
+            "url": "https://picsum.photos/id/20/800/600",
+            "is_primary": false
+          },
+          {
+            "url": "https://picsum.photos/id/21/800/600",
+            "is_primary": false
+          }
+        ]
+      }
+    ]
+  }

@@ -1,0 +1,185 @@
+{
+    "categories": [
+      {
+        "id": 1,
+        "name": "Electronics & Gadgets",
+        "subcategories": [
+          {
+            "id": 101,
+            "name": "Smartphones",
+            "items": ["iPhones", "Android Phones", "Feature Phones"]
+          },
+          {
+            "id": 102, 
+            "name": "Laptops & Computers",
+            "items": ["Laptops", "Desktops", "Tablets", "Accessories"]
+          },
+          {
+            "id": 103,
+            "name": "Gaming Consoles",
+            "items": ["PlayStation", "Xbox", "Nintendo", "Games"]
+          },
+          {
+            "id": 104,
+            "name": "Cameras",
+            "items": ["Digital Cameras", "DSLRs", "Video Cameras", "Lenses"]
+          },
+          {
+            "id": 105,
+            "name": "Audio Equipment",
+            "items": ["Headphones", "Speakers", "Microphones"]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Fashion & Accessories",
+        "subcategories": [
+          {
+            "id": 201,
+            "name": "Men's Clothing",
+            "items": ["Shirts", "Pants", "Suits", "Jackets"]
+          },
+          {
+            "id": 202,
+            "name": "Women's Clothing",
+            "items": ["Dresses", "Tops", "Pants", "Skirts"]
+          },
+          {
+            "id": 203,
+            "name": "Children's Clothing",
+            "items": ["Boys", "Girls", "Infants"]
+          },
+          {
+            "id": 204,
+            "name": "Shoes",
+            "items": ["Men's", "Women's", "Kids"]
+          },
+          {
+            "id": 205,
+            "name": "Bags & Wallets",
+            "items": ["Handbags", "Backpacks", "Wallets"]
+          },
+          {
+            "id": 206,
+            "name": "Jewelry & Watches",
+            "items": ["Necklaces", "Rings", "Watches"]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Home & Furniture",
+        "subcategories": [
+          {
+            "id": 301,
+            "name": "Sofas & Seating",
+            "items": ["Sofas", "Chairs", "Recliners"]
+          },
+          {
+            "id": 302,
+            "name": "Beds & Mattresses",
+            "items": ["Beds", "Mattresses", "Bedding"]
+          },
+          {
+            "id": 303,
+            "name": "Tables & Chairs",
+            "items": ["Dining Sets", "Coffee Tables", "Study Tables"]
+          },
+          {
+            "id": 304,
+            "name": "Storage & Organization",
+            "items": ["Wardrobes", "Shelves", "Cabinets"]
+          },
+          {
+            "id": 305,
+            "name": "Home Decor",
+            "items": ["Wall Art", "Lighting", "Rugs"]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Sports & Leisure",
+        "subcategories": [
+          {
+            "id": 401,
+            "name": "Fitness Equipment",
+            "items": ["Treadmills", "Weights", "Yoga Equipment"]
+          },
+          {
+            "id": 402,
+            "name": "Outdoor Gear",
+            "items": ["Camping", "Hiking", "Fishing"]
+          },
+          {
+            "id": 403,
+            "name": "Sports Equipment",
+            "items": ["Football", "Basketball", "Tennis"]
+          },
+          {
+            "id": 404,
+            "name": "Musical Instruments",
+            "items": ["Guitars", "Pianos", "Drums"]
+          },
+          {
+            "id": 405,
+            "name": "Books & Hobbies",
+            "items": ["Books", "Board Games", "Art Supplies"]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Vehicles & Parts",
+        "subcategories": [
+          {
+            "id": 501,
+            "name": "Cars",
+            "items": ["Sedan", "SUV", "Hatchback"]
+          },
+          {
+            "id": 502,
+            "name": "Motorcycles",
+            "items": ["Sport Bikes", "Cruisers", "Scooters"]
+          },
+          {
+            "id": 503,
+            "name": "Auto Parts",
+            "items": ["Engine Parts", "Body Parts", "Tires"]
+          },
+          {
+            "id": 504,
+            "name": "Vehicle Accessories",
+            "items": ["Car Audio", "Navigation", "Security"]
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "Baby & Kids",
+        "subcategories": [
+          {
+            "id": 601,
+            "name": "Toys",
+            "items": ["Educational Toys", "Outdoor Toys", "Action Figures"]
+          },
+          {
+            "id": 602,
+            "name": "Baby Gear",
+            "items": ["Strollers", "Car Seats", "Cribs"]
+          },
+          {
+            "id": 603,
+            "name": "School Supplies",
+            "items": ["Backpacks", "Stationery", "Books"]
+          },
+          {
+            "id": 604,
+            "name": "Children's Furniture",
+            "items": ["Beds", "Study Tables", "Storage"]
+          }
+        ]
+      }
+    ]
+  }

@@ -118,7 +118,11 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <h3 class="text-sm font-medium text-gray-900">{{ listing.seller.get_full_name|default:listing.seller.username }}</h3>
+                        <h3 class="text-sm font-medium text-gray-900">
+                            <a href="{% url 'accounts:profile_detail' pk=listing.seller.pk %}" class="hover:text-indigo-600">
+                                {{ listing.seller.get_full_name|default:listing.seller.username }}
+                            </a>
+                        </h3>
                         <p class="text-sm text-gray-500">Member since {{ listing.seller.date_joined|date:"F Y" }}</p>
                     </div>
                 </div>

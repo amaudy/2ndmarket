@@ -37,18 +37,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Third party apps
-    'django.contrib.sites',  # Required for allauth
+    'django.contrib.sites',
+
+    # Third-party apps
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'crispy_forms',
     'crispy_tailwind',
+
     # Local apps
     'apps.accounts',
     'apps.core',
-    'apps.categories.apps.CategoriesConfig',
-    'apps.listings.apps.ListingsConfig',
+    'apps.categories',
+    'apps.listings',
 ]
 
 MIDDLEWARE = [

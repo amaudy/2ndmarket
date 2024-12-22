@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Edit Profile</h1>
+    
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Avatar -->
+        <div>
+            {{ form.avatar|as_crispy_field }}
+            {% if user.userprofile.avatar %}
+                <div class="mt-2">
+                    <img src="{{ user.userprofile.avatar.url }}" alt="Current avatar" class="h-24 w-24 rounded-full object-cover">
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Bio -->
+        <div>
+            {{ form.bio|as_crispy_field }}
+        </div>
+        
+        <!-- Contact Info -->
+        <div class="grid grid-cols-1 gap-6">
+            <div>
+                {{ form.phone_number|as_crispy_field }}
+            </div>
+            <div>
+                {{ form.address|as_crispy_field }}
+            </div>
+        </div>
+        
+        <!-- Submit Button -->
+        <div class="flex justify-end space-x-4">
+            <a href="{% url 'accounts:profile_detail' username=user.username %}" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Cancel
+            </a>
+            <button type="submit" class="px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %} 

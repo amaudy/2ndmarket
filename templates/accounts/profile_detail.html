@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ profile_user.get_full_name|default:profile_user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Profile Header -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    {% if profile_user.userprofile.avatar %}
+                        <img src="{{ profile_user.userprofile.avatar.url }}" alt="Profile" class="h-24 w-24 rounded-full object-cover">
+                    {% else %}
+                        <svg class="h-24 w-24 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                    {% endif %}
+                </div>
+                <div class="ml-6">
+                    <h1 class="text-2xl font-bold text-gray-900">
+                        {{ profile_user.get_full_name|default:profile_user.username }}
+                    </h1>
+                    <p class="text-sm text-gray-500">Member since {{ profile_user.date_joined|date:"F Y" }}</p>
+                    {% if profile_user.userprofile.bio %}
+                        <p class="mt-2 text-gray-600">{{ profile_user.userprofile.bio }}</p>
+                    {% endif %}
+                </div>
+                {% if user == profile_user %}
+                <div class="ml-auto">
+                    <a href="{% url 'accounts:profile_edit' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Edit Profile
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                <div class="bg-gray-50 overflow-hidden shadow rounded-lg">
+                    <div class="px-4 py-5 sm:p-6">
+                        <dt class="text-sm font-medium text-gray-500 truncate">Active Listings</dt>
+                        <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ profile_user.userprofile.active_listings_count }}</dd>
+                    </div>
+                </div>
+                <div class="bg-gray-50 overflow-hidden shadow rounded-lg">
+                    <div class="px-4 py-5 sm:p-6">
+                        <dt class="text-sm font-medium text-gray-500 truncate">Items Sold</dt>
+                        <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ profile_user.userprofile.sold_items_count }}</dd>
+                    </div>
+                </div>
+                <div class="bg-gray-50 overflow-hidden shadow rounded-lg">
+                    <div class="px-4 py-5 sm:p-6">
+                        <dt class="text-sm font-medium text-gray-500 truncate">Member For</dt>
+                        <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ profile_user.date_joined|timesince }}</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Listings -->
+    <div class="mt-8">
+        <h2 class="text-lg font-medium text-gray-900">Active Listings</h2>
+        <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for listing in active_listings %}
+                {% include "listings/partials/listing_card.html" with listing=listing %}
+            {% empty %}
+                <p class="text-gray-500">No active listings</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Sold Items -->
+    <div class="mt-8">
+        <h2 class="text-lg font-medium text-gray-900">Sold Items</h2>
+        <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for listing in sold_listings %}
+                {% include "listings/partials/listing_card.html" with listing=listing %}
+            {% empty %}
+                <p class="text-gray-500">No items sold yet</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

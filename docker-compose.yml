@@ -2,12 +2,14 @@ services:
   web:
     build: .
     command: >
-      sh -c "python manage.py migrate &&
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py makemigrations accounts &&
+             python manage.py migrate accounts &&
              python manage.py loaddata users &&
              python manage.py loaddata email_addresses &&
-             python manage.py makemigrations &&
-             python manage.py migrate &&
              python manage.py loaddata initial_categories &&
+             python manage.py loaddata products &&
              python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app

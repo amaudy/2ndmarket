@@ -89,6 +89,8 @@ class TestCreateListing:
             'price': '99.99',
             'condition': 'new',
             'category': self.sub_category.id,
+            'status': 'active',
+            'is_available': True,
             **images
         }
         
@@ -125,13 +127,15 @@ class TestCreateListing:
             'price': '-10.00',  # Negative price
             'condition': 'new',
             'category': self.sub_category.id,
+            'status': 'active',
+            'is_available': True
         }
         
         response = client.post(url, data)
         assert response.status_code == 200
         assert ProductListing.objects.count() == 0
         form = response.context['form']
-        assert 'Ensure this value is greater than or equal to 0' in form.errors['price']
+        assert 'Price cannot be negative' in form.errors['price']
 
     def test_my_listings_view(self, client):
         client.login(username='testuser', password='testpass123')

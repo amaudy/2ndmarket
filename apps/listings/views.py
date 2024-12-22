@@ -160,10 +160,11 @@ class EditListingView(LoginRequiredMixin, UpdateView):
                     print(f"{field}: {old_value} -> {new_value}")
 
                 self.object.save()
+                form.save_m2m()
                 print(f"\nFinal object: {self.object.__dict__}")
 
                 messages.success(self.request, 'Listing updated successfully!')
-                return super().form_valid(form)
+                return redirect(self.get_success_url())
                 
         except Exception as e:
             print(f"Error in form_valid: {str(e)}")

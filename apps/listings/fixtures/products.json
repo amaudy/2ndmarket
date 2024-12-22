@@ -1,0 +1,36 @@
+[
+    {
+        "model": "listings.productlisting",
+        "pk": 1,
+        "fields": {
+            "title": "iPhone 12 Pro - Great Condition",
+            "description": "Used for 1 year, comes with original box and charger",
+            "price": "599.99",
+            "condition": "good",
+            "category": 101,
+            "seller": 2,
+            "status": "active",
+            "is_available": true,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z",
+            "views_count": 0
+        }
+    },
+    {
+        "model": "listings.productlisting",
+        "pk": 2,
+        "fields": {
+            "title": "MacBook Pro 2021",
+            "description": "M1 Pro, 16GB RAM, 512GB SSD",
+            "price": "1299.99",
+            "condition": "like_new",
+            "category": 102,
+            "seller": 2,
+            "status": "active",
+            "is_available": true,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z",
+            "views_count": 0
+        }
+    }
+] 

@@ -9,7 +9,7 @@ services:
              python manage.py loaddata users &&
              python manage.py loaddata email_addresses &&
              python manage.py loaddata initial_categories &&
-             python manage.py loaddata products &&
+             python manage.py loaddata sample_listings &&
              python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app

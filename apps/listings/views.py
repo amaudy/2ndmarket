@@ -305,7 +305,7 @@ class CreateOrderView(LoginRequiredMixin, View):
             messages.success(request, 'Order placed successfully!')
             return JsonResponse({
                 'status': 'success',
-                'redirect_url': reverse('listings:my-purchases')
+                'redirect_url': reverse('purchases:list')
             })
 
         except Exception as e:

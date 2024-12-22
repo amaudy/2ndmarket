@@ -550,3 +550,140 @@ class TestOrders:
         
         assert response.status_code == 400
         assert Order.objects.count() == 0
+
+@pytest.mark.django_db
+class TestPurchases:
+    @pytest.fixture(autouse=True)
+    def setup_users(self):
+        self.buyer = User.objects.create_user(
+            username='buyer',
+            password='testpass123',
+            email='buyer@example.com'
+        )
+        self.seller = User.objects.create_user(
+            username='seller',
+            password='testpass123',
+            email='seller@example.com'
+        )
+        return self.buyer, self.seller
+
+    @pytest.fixture
+    def setup_orders(self, setup_users):
+        # Create categories
+        main_category = MainCategory.objects.create(name='Electronics')
+        category = SubCategory.objects.create(
+            name='Phones',
+            main_category=main_category
+        )
+        
+        # Create listings and orders
+        listings_data = [
+            {
+                'title': 'iPhone 14',
+                'price': Decimal('999.99'),
+                'status': 'sold',
+                'order_status': 'delivered'
+            },
+            {
+                'title': 'Samsung S23',
+                'price': Decimal('899.99'),
+                'status': 'sold',
+                'order_status': 'shipped'
+            },
+            {
+                'title': 'Google Pixel 7',
+                'price': Decimal('799.99'),
+                'status': 'sold',
+                'order_status': 'paid'
+            }
+        ]
+        
+        self.orders = []
+        for data in listings_data:
+            listing = ProductListing.objects.create(
+                title=data['title'],
+                description='Test description',
+                price=data['price'],
+                condition='like_new',
+                category=category,
+                seller=self.seller,
+                status=data['status'],
+                is_available=False
+            )
+            
+            order = Order.objects.create(
+                listing=listing,
+                buyer=self.buyer,
+                amount=data['price'],
+                status=data['order_status'],
+                shipping_address='123 Test St'
+            )
+            self.orders.append(order)
+        
+        return self.orders
+
+    def test_view_purchases_requires_login(self, client):
+        url = reverse('listings:my-purchases')
+        response = client.get(url)
+        assert response.status_code == 302
+        assert '/accounts/login/' in response.url
+
+    def test_view_purchases_success(self, client, setup_orders):
+        client.login(username='buyer', password='testpass123')
+        url = reverse('listings:my-purchases')
+        response = client.get(url)
+        
+        assert response.status_code == 200
+        assert 'My Purchases' in str(response.content)
+        
+        # Check all orders are displayed
+        for order in self.orders:
+            assert order.listing.title in str(response.content)
+            assert str(order.amount) in str(response.content)
+            assert order.get_status_display() in str(response.content)
+
+    def test_view_purchases_empty(self, client, setup_users):
+        client.login(username='buyer', password='testpass123')
+        url = reverse('listings:my-purchases')
+        response = client.get(url)
+        
+        assert response.status_code == 200
+        assert 'No purchases yet' in str(response.content)
+
+    def test_view_purchases_pagination(self, client, setup_orders):
+        # Create additional orders to test pagination
+        main_category = MainCategory.objects.get(name='Electronics')
+        category = SubCategory.objects.get(name='Phones')
+        
+        # Create 12 more orders (total 15)
+        for i in range(12):
+            listing = ProductListing.objects.create(
+                title=f'Test Listing {i}',
+                description='Test description',
+                price=Decimal('99.99'),
+                condition='like_new',
+                category=category,
+                seller=self.seller,
+                status='sold',
+                is_available=False
+            )
+            
+            Order.objects.create(
+                listing=listing,
+                buyer=self.buyer,
+                amount=Decimal('99.99'),
+                status='paid',
+                shipping_address='123 Test St'
+            )
+        
+        client.login(username='buyer', password='testpass123')
+        
+        # Test first page
+        response = client.get(reverse('listings:my-purchases'))
+        assert response.status_code == 200
+        assert len(response.context['orders']) == 10  # Items per page
+        
+        # Test second page
+        response = client.get(reverse('listings:my-purchases') + '?page=2')
+        assert response.status_code == 200
+        assert len(response.context['orders']) == 5  # Remaining items

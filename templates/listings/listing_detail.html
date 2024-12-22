@@ -130,9 +130,41 @@
 
             {% if user.is_authenticated and user != listing.seller %}
             <div class="mt-8">
-                <button type="button" class="w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Contact Seller
+                <button type="button" 
+                        id="buyButton"
+                        class="w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Buy Now - ${{ listing.price }}
                 </button>
+            </div>
+
+            <!-- Payment Modal -->
+            <div id="paymentModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
+                <div class="bg-white p-6 rounded-lg max-w-md w-full">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">Complete Purchase</h3>
+                        <button type="button" class="close-modal text-gray-400 hover:text-gray-500">
+                            <span class="sr-only">Close</span>
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form id="payment-form" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="space-y-2">
+                            <label for="shipping_address" class="block text-sm font-medium text-gray-700">Shipping Address</label>
+                            <textarea id="shipping_address" name="shipping_address" rows="3" 
+                                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                    required>{{ user.userprofile.address }}</textarea>
+                        </div>
+
+                        <button type="submit" 
+                                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Buy Now - ${{ listing.price }}
+                        </button>
+                    </form>
+                </div>
             </div>
             {% endif %}
 
@@ -332,6 +364,56 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             }
+        }
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buyButton = document.getElementById('buyButton');
+    const modal = document.getElementById('paymentModal');
+    const closeModal = modal.querySelector('.close-modal');
+    const form = document.getElementById('payment-form');
+
+    buyButton?.addEventListener('click', function() {
+        modal.classList.remove('hidden');
+    });
+
+    closeModal?.addEventListener('click', function() {
+        modal.classList.add('hidden');
+    });
+
+    form?.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Processing...';
+
+        try {
+            const response = await fetch('{% url "listings:buy" listing.pk %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(new FormData(form))
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            // Redirect on success
+            window.location.href = data.redirect_url;
+
+        } catch (error) {
+            alert(error.message);
+            submitButton.disabled = false;
+            submitButton.textContent = 'Buy Now - ${{ listing.price }}';
         }
     });
 });

@@ -2,8 +2,10 @@ import pytest
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
-from apps.listings.models import ProductListing, ListingImage
+from apps.listings.models import ProductListing, ListingImage, Order
 from apps.categories.models import MainCategory, SubCategory
+from django.utils.http import urlencode
+from decimal import Decimal
 
 @pytest.mark.django_db
 class TestCreateListing:
@@ -380,3 +382,171 @@ class TestCreateListing:
         
         assert response.status_code == 403
         assert ListingImage.objects.filter(pk=image.pk).exists()
+
+@pytest.mark.django_db
+class TestOrders:
+    @pytest.fixture(autouse=True)
+    def setup_users(self):
+        # Create seller
+        self.seller = User.objects.create_user(
+            username='seller',
+            password='testpass123',
+            email='seller@example.com'
+        )
+        
+        # Create buyer
+        self.buyer = User.objects.create_user(
+            username='buyer',
+            password='testpass123',
+            email='buyer@example.com'
+        )
+        return self.buyer, self.seller
+
+    @pytest.fixture(autouse=True)
+    def setup_listing(self, setup_users):
+        # Create main category and subcategory
+        main_category = MainCategory.objects.create(name='Electronics')
+        self.category = SubCategory.objects.create(
+            name='Phones',
+            main_category=main_category
+        )
+        
+        # Create listing
+        self.listing = ProductListing.objects.create(
+            title='iPhone 14',
+            description='Great condition',
+            price=Decimal('999.99'),
+            condition='like_new',
+            category=self.category,
+            seller=self.seller,
+            status='active',
+            is_available=True
+        )
+        return self.listing
+
+    def test_create_order_success(self, client, setup_listing):
+        # Login as buyer
+        client.login(username='buyer', password='testpass123')
+        
+        # Prepare order data
+        data = {
+            'shipping_address': '123 Test St, Test City, 12345'
+        }
+        
+        # Print debug info
+        print("\nTest Debug:")
+        print(f"Listing ID: {self.listing.pk}")
+        print(f"Data: {data}")
+        
+        # Create order
+        response = client.post(
+            reverse('listings:buy', kwargs={'pk': self.listing.pk}),
+            data=urlencode(data),
+            content_type='application/x-www-form-urlencoded'
+        )
+        
+        # Print response info
+        print(f"Response status: {response.status_code}")
+        print(f"Response content: {response.content.decode()}")
+        
+        assert response.status_code == 200
+        assert response.json()['status'] == 'success'
+        
+        # Check order was created
+        order = Order.objects.first()
+        assert order is not None
+        assert order.buyer == self.buyer
+        assert order.listing == self.listing
+        assert order.amount == Decimal('999.99')
+        assert order.status == 'paid'
+        assert order.shipping_address == data['shipping_address']
+        
+        # Check listing was updated
+        self.listing.refresh_from_db()
+        assert self.listing.status == 'sold'
+        assert not self.listing.is_available
+
+    def test_cannot_buy_own_listing(self, client, setup_listing):
+        # Login as seller
+        client.login(username='seller', password='testpass123')
+        
+        data = {
+            'shipping_address': '123 Test St, Test City, 12345'
+        }
+        
+        response = client.post(
+            reverse('listings:buy', kwargs={'pk': self.listing.pk}),
+            data=data
+        )
+        
+        assert response.status_code == 400
+        assert 'Cannot buy your own listing' in response.json()['error']
+        assert Order.objects.count() == 0
+
+    def test_cannot_buy_unavailable_listing(self, client, setup_listing):
+        # Login as buyer
+        client.login(username='buyer', password='testpass123')
+        
+        # Make listing unavailable
+        self.listing.is_available = False
+        self.listing.save()
+        
+        data = {
+            'shipping_address': '123 Test St, Test City, 12345'
+        }
+        
+        response = client.post(
+            reverse('listings:buy', kwargs={'pk': self.listing.pk}),
+            data=data
+        )
+        
+        assert response.status_code == 400
+        assert 'Item not available' in response.json()['error']
+        assert Order.objects.count() == 0
+
+    def test_cannot_buy_without_login(self, client, setup_listing):
+        data = {
+            'shipping_address': '123 Test St, Test City, 12345'
+        }
+        
+        response = client.post(
+            reverse('listings:buy', kwargs={'pk': self.listing.pk}),
+            data=data
+        )
+        
+        assert response.status_code == 302  # Redirects to login
+        assert Order.objects.count() == 0
+
+    def test_cannot_buy_sold_listing(self, client, setup_listing):
+        # Login as buyer
+        client.login(username='buyer', password='testpass123')
+        
+        # Mark listing as sold
+        self.listing.status = 'sold'
+        self.listing.save()
+        
+        data = {
+            'shipping_address': '123 Test St, Test City, 12345'
+        }
+        
+        response = client.post(
+            reverse('listings:buy', kwargs={'pk': self.listing.pk}),
+            data=data
+        )
+        
+        assert response.status_code == 400
+        assert 'Item not available' in response.json()['error']
+        assert Order.objects.count() == 0
+
+    def test_shipping_address_required(self, client, setup_listing):
+        # Login as buyer
+        client.login(username='buyer', password='testpass123')
+        
+        # Try to create order without shipping address
+        response = client.post(
+            reverse('listings:buy', kwargs={'pk': self.listing.pk}),
+            data={}
+        )
+        
+        assert response.status_code == 400
+        assert Order.objects.count() == 0

@@ -44,3 +44,8 @@ docker compose exec web pytest apps/listings/tests.py -v -k "edit" -s
 ```bash
 docker compose exec web pytest apps/listings/tests.py -v -k "edit" --cov=apps.listings
 ```
+
+
+```
+docker compose exec web pytest apps/listings/tests.py -v -k "TestOrders"
+```

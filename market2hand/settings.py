@@ -178,3 +178,8 @@ LOGIN_URL = 'account_login'
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
+
+# Stripe Settings
+STRIPE_PUBLIC_KEY = 'your_stripe_public_key'
+STRIPE_SECRET_KEY = 'your_stripe_secret_key'
+STRIPE_WEBHOOK_SECRET = 'your_stripe_webhook_secret'

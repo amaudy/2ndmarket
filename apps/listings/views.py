@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.views.generic import ListView, DetailView
 from django.core.exceptions import ValidationError
-from .models import ProductListing, ListingImage
+from .models import ProductListing, ListingImage, Order
 from .forms import ProductListingForm
 from django.http import JsonResponse
 from django.views.generic.edit import DeleteView
@@ -18,6 +18,11 @@ from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.views.generic import View
 from .forms import CommentForm
+from django.conf import settings
+from django.urls import reverse
+import stripe
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class CreateListingView(LoginRequiredMixin, CreateView):
     model = ProductListing
@@ -254,3 +259,93 @@ class DeleteCommentView(LoginRequiredMixin, View):
             'status': 'success',
             'comment_count': listing.comments.count()
         })
+
+class CreateOrderView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        listing = get_object_or_404(ProductListing, pk=pk)
+        
+        print("\nDebug CreateOrderView:")
+        print(f"POST data: {request.POST}")
+        print(f"Content type: {request.content_type}")
+        
+        # Check if user is not the seller
+        if listing.seller == request.user:
+            messages.error(request, "You cannot buy your own listing")
+            return JsonResponse({'error': 'Cannot buy your own listing'}, status=400)
+            
+        # Check if listing is available
+        if not listing.is_available or listing.status != 'active':
+            messages.error(request, "This item is no longer available")
+            return JsonResponse({'error': 'Item not available'}, status=400)
+
+        # Check shipping address
+        shipping_address = request.POST.get('shipping_address', '').strip()
+        print(f"Shipping address: {shipping_address}")
+        if not shipping_address:
+            return JsonResponse({'error': 'Shipping address is required'}, status=400)
+
+        try:
+            # Create Order
+            order = Order.objects.create(
+                listing=listing,
+                buyer=request.user,
+                amount=listing.price,
+                shipping_address=shipping_address
+            )
+
+            # Mock successful payment
+            order.status = 'paid'
+            order.save()
+
+            # Update listing status
+            listing.status = 'sold'
+            listing.is_available = False
+            listing.save()
+
+            messages.success(request, 'Order placed successfully!')
+            return JsonResponse({
+                'status': 'success',
+                'redirect_url': reverse('listings:my-purchases')
+            })
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+class OrderConfirmView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        order = get_object_or_404(Order, pk=pk, buyer=request.user)
+        
+        try:
+            # Update listing status
+            with transaction.atomic():
+                listing = order.listing
+                listing.status = 'sold'
+                listing.is_available = False
+                listing.save()
+                
+                order.status = 'paid'
+                order.save()
+                
+                messages.success(request, 'Payment successful! Order confirmed.')
+                
+            return JsonResponse({'status': 'success'})
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+class MyPurchasesView(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = 'listings/my_purchases.html'
+    context_object_name = 'orders'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Order.objects.filter(
+            buyer=self.request.user
+        ).select_related(
+            'listing',
+            'listing__seller',
+            'listing__category'
+        ).prefetch_related(
+            'listing__images'
+        ).order_by('-created_at')

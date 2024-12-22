@@ -157,10 +157,11 @@
                 {% endif %}
                 
                 <div class="mt-8 space-y-8" id="commentsList">
+                    <div id="noCommentsMessage" class="{% if listing.comments.exists %}hidden{% endif %}">
+                        <p class="text-gray-500 text-center">No comments yet.</p>
+                    </div>
                     {% for comment in listing.comments.all %}
                         {% include "listings/partials/comment.html" with comment=comment %}
-                    {% empty %}
-                        <p class="text-gray-500 text-center">No comments yet.</p>
                     {% endfor %}
                 </div>
             </div>
@@ -252,6 +253,12 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
+                // Hide the "No comments" message if it exists
+                const noCommentsMessage = document.getElementById('noCommentsMessage');
+                if (noCommentsMessage) {
+                    noCommentsMessage.classList.add('hidden');
+                }
+                
                 commentsList.insertAdjacentHTML('afterbegin', data.html);
                 commentForm.reset();
                 charCount.textContent = '0/1000';

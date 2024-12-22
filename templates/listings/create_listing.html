@@ -20,6 +20,14 @@
     <form method="post" enctype="multipart/form-data" class="space-y-6" id="listingForm">
         {% csrf_token %}
         
+        <!-- Debug info -->
+        {% if form.errors %}
+        <div class="bg-red-50 p-4 rounded-md">
+            <h3 class="text-sm font-medium text-red-800">Form has errors:</h3>
+            {{ form.errors }}
+        </div>
+        {% endif %}
+        
         <!-- Title -->
         <div>
             {{ form.title|as_crispy_field }}
@@ -37,6 +45,16 @@
             </div>
             <div>
                 {{ form.condition|as_crispy_field }}
+            </div>
+        </div>
+        
+        <!-- Status and Availability -->
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div>
+                {{ form.status|as_crispy_field }}
+            </div>
+            <div>
+                {{ form.is_available|as_crispy_field }}
             </div>
         </div>
         

@@ -1,0 +1,41 @@
+<div class="comment" id="comment-{{ comment.id }}">
+    <div class="flex space-x-3">
+        <div class="flex-shrink-0">
+            <svg class="h-10 w-10 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+        </div>
+        <div class="flex-grow">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-medium text-gray-900">{{ comment.author.get_full_name|default:comment.author.username }}</h3>
+                <p class="text-sm text-gray-500">
+                    {{ comment.created_at|timesince }} ago
+                    {% if comment.is_edited %}
+                        (edited)
+                    {% endif %}
+                </p>
+            </div>
+            <div class="mt-1 text-sm text-gray-700 comment-content">
+                {{ comment.content|linebreaks }}
+            </div>
+            {% if comment.can_edit|default:False or comment.can_delete|default:False %}
+            <div class="mt-2 space-x-2">
+                {% if comment.can_edit %}
+                <button type="button" 
+                        class="text-sm text-indigo-600 hover:text-indigo-900 edit-comment"
+                        data-comment-id="{{ comment.id }}">
+                    Edit
+                </button>
+                {% endif %}
+                {% if comment.can_delete %}
+                <button type="button" 
+                        class="text-sm text-red-600 hover:text-red-900 delete-comment"
+                        data-comment-id="{{ comment.id }}">
+                    Delete
+                </button>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div> 

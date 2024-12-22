@@ -15,6 +15,9 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
+from django.template.loader import render_to_string
+from django.views.generic import View
+from .forms import CommentForm
 
 class CreateListingView(LoginRequiredMixin, CreateView):
     model = ProductListing
@@ -28,33 +31,30 @@ class CreateListingView(LoginRequiredMixin, CreateView):
         print(f"Files: {self.request.FILES}")
         print(f"User: {self.request.user}")
 
-        form.instance.seller = self.request.user
-        form.instance.status = 'active'
-        
-        # Validate price
-        if form.cleaned_data['price'] < 0:
-            form.add_error('price', 'Price cannot be negative')
-            return self.form_invalid(form)
-        
         try:
             with transaction.atomic():
-                response = super().form_valid(form)
-                print(f"Listing created: {self.object.__dict__}")
+                # Set the seller before saving
+                form.instance.seller = self.request.user
+                form.instance.status = 'active'
+                
+                # Save the form
+                self.object = form.save()
+                print(f"Listing saved with ID: {self.object.id}")
                 
                 # Handle images
                 for i in range(4):
                     image_key = f'image_{i}'
                     if image_key in self.request.FILES:
-                        ListingImage.objects.create(
+                        image = ListingImage.objects.create(
                             listing=self.object,
                             image=self.request.FILES[image_key],
                             display_order=i,
                             is_primary=(i == 0)
                         )
-                    print(f"Image {i} processed")
+                        print(f"Image {i} saved with ID: {image.id}")
                 
                 messages.success(self.request, 'Listing created successfully!')
-                return response
+                return super().form_valid(form)
                 
         except Exception as e:
             print(f"Error creating listing: {str(e)}")
@@ -62,15 +62,20 @@ class CreateListingView(LoginRequiredMixin, CreateView):
             messages.error(self.request, 'Error creating listing. Please try again.')
             return self.form_invalid(form)
 
+    def form_invalid(self, form):
+        print("\nForm Invalid Debug:")
+        print(f"Form errors: {form.errors}")
+        messages.error(self.request, 'Please correct the errors below.')
+        return super().form_invalid(form)
+
 class MyListingsView(LoginRequiredMixin, ListView):
     model = ProductListing
     template_name = 'listings/my_listings.html'
     context_object_name = 'listings'
-    paginate_by = 9  # Show 9 listings per page
-    ordering = ['-created_at']
+    paginate_by = 9
 
     def get_queryset(self):
-        return ProductListing.objects.filter(
+        queryset = ProductListing.objects.filter(
             seller=self.request.user
         ).select_related(
             'category', 
@@ -78,6 +83,13 @@ class MyListingsView(LoginRequiredMixin, ListView):
         ).prefetch_related(
             'images'
         ).order_by('-created_at')
+        
+        print("\nMyListings Debug:")
+        print(f"User: {self.request.user}")
+        print(f"Query: {queryset.query}")
+        print(f"Count: {queryset.count()}")
+        
+        return queryset
 
 class DeleteListingView(LoginRequiredMixin, DeleteView):
     model = ProductListing
@@ -170,3 +182,74 @@ def delete_listing_image(request, pk):
         image.delete()
         return JsonResponse({'status': 'success'})
     return JsonResponse({'error': 'Invalid method'}, status=405)
+
+class AddCommentView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        listing = get_object_or_404(ProductListing, pk=pk)
+        form = CommentForm(request.POST)
+        
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.listing = listing
+            comment.author = request.user
+            comment.save()
+            
+            # Render the new comment HTML
+            html = render_to_string('listings/partials/comment.html', {
+                'comment': comment,
+                'user': request.user
+            })
+            
+            return JsonResponse({
+                'status': 'success',
+                'html': html,
+                'comment_count': listing.comments.count()
+            })
+        
+        return JsonResponse({
+            'status': 'error',
+            'errors': form.errors
+        }, status=400)
+
+class EditCommentView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        comment = get_object_or_404(Comment, pk=pk)
+        
+        if not comment.can_edit(request.user):
+            return JsonResponse({'error': 'Not authorized'}, status=403)
+        
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.is_edited = True
+            comment.save()
+            
+            html = render_to_string('listings/partials/comment.html', {
+                'comment': comment,
+                'user': request.user
+            })
+            
+            return JsonResponse({
+                'status': 'success',
+                'html': html
+            })
+        
+        return JsonResponse({
+            'status': 'error',
+            'errors': form.errors
+        }, status=400)
+
+class DeleteCommentView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        comment = get_object_or_404(Comment, pk=pk)
+        
+        if not comment.can_delete(request.user):
+            return JsonResponse({'error': 'Not authorized'}, status=403)
+        
+        listing = comment.listing
+        comment.delete()
+        
+        return JsonResponse({
+            'status': 'success',
+            'comment_count': listing.comments.count()
+        })

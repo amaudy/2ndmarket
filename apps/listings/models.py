@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from apps.categories.models import SubCategory
 from django.urls import reverse
+from django.utils import timezone
 
 class ProductListing(models.Model):
     CONDITION_CHOICES = [
@@ -64,3 +65,33 @@ class ListingImage(models.Model):
 
     def __str__(self):
         return f"Image {self.display_order} for {self.listing.title}" 
+
+class Comment(models.Model):
+    listing = models.ForeignKey(ProductListing, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField(max_length=1000)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_edited = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Comment by {self.author.username} on {self.listing.title}'
+
+    def can_edit(self, user):
+        """Check if user can edit this comment"""
+        if not user.is_authenticated:
+            return False
+        if user == self.author:
+            # Can edit within 15 minutes
+            time_diff = timezone.now() - self.created_at
+            return time_diff.total_seconds() < 900  # 15 minutes
+        return False
+
+    def can_delete(self, user):
+        """Check if user can delete this comment"""
+        if not user.is_authenticated:
+            return False
+        return user == self.author or user == self.listing.seller

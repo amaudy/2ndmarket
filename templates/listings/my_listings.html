@@ -42,8 +42,13 @@
                             {{ listing.get_status_display }}
                         </span>
                         <div class="flex space-x-2">
-                            <button type="button" onclick="event.stopPropagation(); window.location.href='#'" class="text-indigo-600 hover:text-indigo-900">Edit</button>
-                            <button type="button" onclick="event.stopPropagation();" class="text-red-600 hover:text-red-900 delete-listing" data-listing-id="{{ listing.id }}">Delete</button>
+                            <button type="button" onclick="event.stopPropagation(); window.location.href='{% url 'listings:edit' listing.pk %}'" class="text-indigo-600 hover:text-indigo-900">Edit</button>
+                            <button type="button" 
+                                    onclick="event.stopPropagation();" 
+                                    class="text-red-600 hover:text-red-900 delete-listing" 
+                                    data-listing-id="{{ listing.id }}">
+                                Delete
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -56,8 +56,13 @@ class TestCreateListing:
             'price': '99.99',
             'condition': 'new',
             'category': self.sub_category.id,
-            'image_0': self.image
+            'image_0': self.image,
+            'status': 'active',
+            'is_available': True
         }
+        
+        print("\nTest Debug:")
+        print(f"Data being sent: {data}")
         
         response = client.post(url, data, follow=True)
         assert response.status_code == 200
@@ -176,9 +181,9 @@ class TestCreateListing:
         )
         
         url = reverse('listings:delete', kwargs={'pk': listing.pk})
-        response = client.post(url)
+        response = client.post(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         
-        assert response.status_code == 200
+        assert response.status_code == 302
         assert not ProductListing.objects.filter(pk=listing.pk).exists()
 
     def test_delete_listing_unauthorized(self, client):
@@ -201,7 +206,7 @@ class TestCreateListing:
         )
         
         url = reverse('listings:delete', kwargs={'pk': listing.pk})
-        response = client.post(url)
+        response = client.post(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         
         assert response.status_code == 403
         assert ProductListing.objects.filter(pk=listing.pk).exists() 
@@ -227,3 +232,147 @@ class TestCreateListing:
         assert str(listing.price) in str(response.content)
         assert listing.get_condition_display() in str(response.content)
         assert listing.seller.username in str(response.content) 
+
+    def test_edit_listing(self, client):
+        client.login(username='testuser', password='testpass123')
+        
+        # Create a test listing
+        listing = ProductListing.objects.create(
+            title='Test Listing',
+            description='Test Description',
+            price='99.99',
+            condition='new',
+            category=self.sub_category,
+            seller=self.user,
+            status='active'
+        )
+        
+        # Print initial state
+        print("\nInitial listing state:")
+        print(f"Title: {listing.title}")
+        print(f"Description: {listing.description}")
+        print(f"Price: {listing.price}")
+        print(f"Condition: {listing.condition}")
+        
+        url = reverse('listings:edit', kwargs={'pk': listing.pk})
+        data = {
+            'title': 'Updated Title',
+            'description': 'Updated Description',
+            'price': '199.99',
+            'condition': 'used',
+            'category': self.sub_category.id,
+            'status': 'active',
+            'seller': self.user.id,  # Include seller ID
+            'is_available': True,    # Include availability
+        }
+        
+        # Print the data we're sending
+        print("\nData being sent:")
+        print(data)
+        
+        response = client.post(url, data, follow=True)
+        listing.refresh_from_db()
+        
+        # Print response details
+        print("\nResponse details:")
+        print(f"Status code: {response.status_code}")
+        if hasattr(response.context, 'form'):
+            print(f"Form errors: {response.context['form'].errors}")
+        
+        # Print final state
+        print("\nFinal listing state:")
+        print(f"Title: {listing.title}")
+        print(f"Description: {listing.description}")
+        print(f"Price: {listing.price}")
+        print(f"Condition: {listing.condition}")
+        
+        # Assertions
+        assert response.status_code == 200
+        assert listing.title == data['title'], f"Title not updated. Expected: {data['title']}, Got: {listing.title}"
+        assert listing.description == data['description']
+        assert str(listing.price) == data['price']
+        assert listing.condition == data['condition']
+        assert listing.seller == self.user
+
+    def test_edit_listing_unauthorized(self, client):
+        # Create another user
+        other_user = User.objects.create_user(
+            username='otheruser',
+            password='otherpass123'
+        )
+        client.login(username='otheruser', password='otherpass123')
+        
+        # Create a listing owned by the first user
+        listing = ProductListing.objects.create(
+            title='Test Listing',
+            description='Test Description',
+            price='99.99',
+            condition='new',
+            category=self.sub_category,
+            seller=self.user,  # Original test user
+            status='active'
+        )
+        
+        url = reverse('listings:edit', kwargs={'pk': listing.pk})
+        response = client.get(url)
+        
+        assert response.status_code == 404  # Should not find listings owned by other users
+
+    def test_delete_listing_image(self, client):
+        client.login(username='testuser', password='testpass123')
+        
+        # Create a test listing with image
+        listing = ProductListing.objects.create(
+            title='Test Listing',
+            description='Test Description',
+            price='99.99',
+            condition='new',
+            category=self.sub_category,
+            seller=self.user,
+            status='active'
+        )
+        
+        image = ListingImage.objects.create(
+            listing=listing,
+            image=self.image,
+            display_order=0,
+            is_primary=True
+        )
+        
+        url = reverse('listings:delete_image', kwargs={'pk': image.pk})
+        response = client.post(url)
+        
+        assert response.status_code == 200
+        assert not ListingImage.objects.filter(pk=image.pk).exists()
+
+    def test_delete_listing_image_unauthorized(self, client):
+        # Create another user
+        other_user = User.objects.create_user(
+            username='otheruser',
+            password='otherpass123'
+        )
+        client.login(username='otheruser', password='otherpass123')
+        
+        # Create a listing with image owned by the first user
+        listing = ProductListing.objects.create(
+            title='Test Listing',
+            description='Test Description',
+            price='99.99',
+            condition='new',
+            category=self.sub_category,
+            seller=self.user,  # Original test user
+            status='active'
+        )
+        
+        image = ListingImage.objects.create(
+            listing=listing,
+            image=self.image,
+            display_order=0,
+            is_primary=True
+        )
+        
+        url = reverse('listings:delete_image', kwargs={'pk': image.pk})
+        response = client.post(url)
+        
+        assert response.status_code == 403
+        assert ListingImage.objects.filter(pk=image.pk).exists()

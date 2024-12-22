@@ -48,6 +48,10 @@ class ProductListing(models.Model):
     def get_absolute_url(self):
         return reverse('listing-detail', kwargs={'pk': self.pk})
 
+    def belongs_to_user(self, user):
+        """Check if the listing belongs to the given user"""
+        return self.seller == user
+
 class ListingImage(models.Model):
     listing = models.ForeignKey(ProductListing, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='listings/%Y/%m/%d/')

@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Listing - {{ listing.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .image-preview {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Edit Listing</h1>
+    
+    <form method="post" enctype="multipart/form-data" class="space-y-6" id="listingForm">
+        {% csrf_token %}
+        
+        <!-- Title -->
+        <div>
+            {{ form.title|as_crispy_field }}
+        </div>
+        
+        <!-- Category -->
+        <div>
+            {{ form.category|as_crispy_field }}
+        </div>
+        
+        <!-- Price and Condition -->
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div>
+                {{ form.price|as_crispy_field }}
+            </div>
+            <div>
+                {{ form.condition|as_crispy_field }}
+            </div>
+        </div>
+        
+        <!-- Description -->
+        <div>
+            {{ form.description|as_crispy_field }}
+        </div>
+        
+        <!-- Current Images -->
+        {% if listing.images.exists %}
+        <div class="space-y-4">
+            <h3 class="text-sm font-medium text-gray-900">Current Images</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {% for image in listing.images.all %}
+                <div class="relative">
+                    <img src="{{ image.image.url }}" alt="" class="image-preview rounded-lg">
+                    <button type="button" class="absolute top-2 right-2 text-red-500 hover:text-red-700 delete-image" data-image-id="{{ image.id }}">
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- New Images -->
+        <div class="space-y-4">
+            <label class="block text-sm font-medium text-gray-700">Add New Images (max 4)</label>
+            <div id="imageUploads" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="relative border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-indigo-500 transition-colors">
+                    <input type="file" name="image_0" accept="image/*" class="hidden image-input" data-index="0">
+                    <div class="text-center cursor-pointer image-placeholder h-full w-full flex flex-col items-center justify-center">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <p class="mt-1 text-sm text-gray-600">Click to add image</p>
+                    </div>
+                    <div class="hidden preview-container">
+                        <img src="" alt="Preview" class="image-preview rounded-lg">
+                        <button type="button" class="absolute top-2 right-2 text-red-500 hover:text-red-700 remove-image">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Submit Button -->
+        <div class="flex justify-end space-x-4">
+            <a href="{% url 'listings:detail' object.pk %}" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Cancel
+            </a>
+            <button type="submit" class="px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageUploads = document.getElementById('imageUploads');
+    const maxImages = 4;
+    let currentImages = 1;
+
+    // Handle click on placeholder to trigger file input
+    imageUploads.addEventListener('click', function(e) {
+        const placeholder = e.target.closest('.image-placeholder');
+        if (placeholder) {
+            const container = placeholder.closest('.relative');
+            const input = container.querySelector('.image-input');
+            input.click();
+        }
+    });
+
+    // Handle image upload and preview
+    imageUploads.addEventListener('change', function(e) {
+        if (e.target.classList.contains('image-input')) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                const container = e.target.closest('div');
+                const preview = container.querySelector('.preview-container');
+                const placeholder = container.querySelector('.image-placeholder');
+                const previewImg = preview.querySelector('img');
+
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    placeholder.classList.add('hidden');
+                    preview.classList.remove('hidden');
+                };
+
+                reader.readAsDataURL(file);
+
+                // Add new upload slot if needed
+                if (currentImages < maxImages) {
+                    addImageUpload();
+                }
+            }
+        }
+    });
+
+    // Handle image removal
+    imageUploads.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-image')) {
+            const container = e.target.closest('.relative');
+            const input = container.querySelector('.image-input');
+            const preview = container.querySelector('.preview-container');
+            const placeholder = container.querySelector('.image-placeholder');
+
+            input.value = '';
+            preview.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+        }
+    });
+
+    function addImageUpload() {
+        const template = imageUploads.children[0].cloneNode(true);
+        template.querySelector('.image-input').value = '';
+        template.querySelector('.image-input').name = `image_${currentImages}`;
+        template.querySelector('.image-input').dataset.index = currentImages;
+        template.querySelector('.preview-container').classList.add('hidden');
+        template.querySelector('.image-placeholder').classList.remove('hidden');
+        imageUploads.appendChild(template);
+        currentImages++;
+    }
+
+    // Handle deletion of existing images
+    document.querySelectorAll('.delete-image').forEach(button => {
+        button.addEventListener('click', function() {
+            const imageId = this.dataset.imageId;
+            if (confirm('Are you sure you want to delete this image?')) {
+                fetch(`{% url 'listings:delete_image' 0 %}`.replace('0', imageId), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                }).then(response => {
+                    if (response.ok) {
+                        this.closest('.relative').remove();
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

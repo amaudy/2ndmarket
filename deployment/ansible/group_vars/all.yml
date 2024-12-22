@@ -1,0 +1,5 @@
+---
+app_name: market2hand
+django_secret_key: "{{ lookup('env', 'DJANGO_SECRET_KEY') }}"
+repo_url: "https://github.com/yourusername/market2hand.git"
+server_name: "_" 

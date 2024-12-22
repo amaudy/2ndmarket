@@ -1,0 +1,17 @@
+---
+- name: Create app user
+  user:
+    name: market2hand
+    shell: /bin/bash
+    createhome: yes
+
+- name: Create app directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: market2hand
+    group: market2hand
+    mode: '0755'
+  with_items:
+    - /var/www/market2hand
+    - /var/log/market2hand 

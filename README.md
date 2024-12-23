@@ -49,3 +49,8 @@ docker compose exec web pytest apps/listings/tests.py -v -k "edit" --cov=apps.li
 ```
 docker compose exec web pytest apps/listings/tests.py -v -k "TestOrders"
 ```
+
+
+```
+ssh-keygen -t ed25519 -C "your_email@example.com" -f $(pwd)/deployment/id_ed25519
+```
